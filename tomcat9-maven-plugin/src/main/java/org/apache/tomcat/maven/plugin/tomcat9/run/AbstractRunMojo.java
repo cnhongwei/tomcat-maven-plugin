@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
@@ -59,6 +61,7 @@ import org.apache.catalina.valves.AccessLogValve;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.coyote.ProtocolHandler;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -510,6 +513,15 @@ public abstract class AbstractRunMojo
     protected boolean useBodyEncodingForURI;
 
     /**
+     * Enables virtual threads for Tomcat connectors when running on Java 21 or later.
+     * If enabled on an older runtime, Tomcat falls back to its default executor.
+     *
+     * @since 4.0
+     */
+    @Parameter( property = "maven.tomcat.useVirtualThreads", defaultValue = "true" )
+    protected boolean useVirtualThreads;
+
+    /**
      * @since 2.2
      */
     @Parameter
@@ -554,6 +566,8 @@ public abstract class AbstractRunMojo
     // ----------------------------------------------------------------------
     // Fields
     // ----------------------------------------------------------------------
+
+    private boolean virtualThreadWarningLogged;
 
     /**
      * @since 1.0
@@ -1130,6 +1144,8 @@ public abstract class AbstractRunMojo
 
                 connector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
 
+                useVirtualExecutor(connector.getProtocolHandler());
+
                 embeddedTomcat.getService().addConnector( connector );
 
                 embeddedTomcat.setConnector( connector );
@@ -1206,7 +1222,7 @@ public abstract class AbstractRunMojo
                     {
                         httpsConnector.setAttribute( "address", address );
                     }
-
+                    useVirtualExecutor(httpsConnector.getProtocolHandler());
                     embeddedTomcat.getEngine().getService().addConnector( httpsConnector );
 
                 }
@@ -1223,6 +1239,7 @@ public abstract class AbstractRunMojo
                     {
                         ajpConnector.setAttribute( "address", address );
                     }
+                    useVirtualExecutor(ajpConnector.getProtocolHandler());
                     embeddedTomcat.getEngine().getService().addConnector( ajpConnector );
                 }
 
@@ -1293,6 +1310,69 @@ public abstract class AbstractRunMojo
                 System.setProperty( "catalina.base", previousCatalinaBase );
             }
         }
+    }
+
+    private void useVirtualExecutor( ProtocolHandler protocolHandler )
+    {
+        if ( !useVirtualThreads )
+        {
+            return;
+        }
+
+        if ( !isJava21OrLater() )
+        {
+            logVirtualThreadWarning( "Virtual threads require Java 21 or later; using Tomcat's default executor instead." );
+            return;
+        }
+
+        try
+        {
+            Class<?> executorClass = Class.forName( "org.apache.tomcat.util.threads.VirtualThreadExecutor" );
+            Constructor<?> constructor = executorClass.getConstructor( String.class );
+            Executor executor = (Executor) constructor.newInstance( "tomcat-virt-" );
+            protocolHandler.setExecutor( executor );
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            logVirtualThreadWarning(
+                "Virtual thread support is not available with the current Tomcat libraries; using Tomcat's default executor instead." );
+            getLog().debug( e );
+        }
+    }
+
+    private boolean isJava21OrLater()
+    {
+        String javaSpecificationVersion = System.getProperty( "java.specification.version" );
+        if ( StringUtils.isEmpty( javaSpecificationVersion ) )
+        {
+            return false;
+        }
+
+        if ( javaSpecificationVersion.startsWith( "1." ) )
+        {
+            javaSpecificationVersion = javaSpecificationVersion.substring( 2 );
+        }
+
+        try
+        {
+            return Integer.parseInt( javaSpecificationVersion ) >= 21;
+        }
+        catch ( NumberFormatException e )
+        {
+            getLog().debug( "Unable to parse java.specification.version: " + javaSpecificationVersion, e );
+            return false;
+        }
+    }
+
+    private void logVirtualThreadWarning( String message )
+    {
+        if ( virtualThreadWarningLogged )
+        {
+            return;
+        }
+
+        getLog().warn( message );
+        virtualThreadWarningLogged = true;
     }
 
     private List<Webapp> getAdditionalWebapps()

@@ -98,6 +98,27 @@ Run Mojo: run your Maven war project quickly!
 
   With the structure given above, from the top level directory use mvn tomcat9:run -pl :my-webapp -am.
 
+* Virtual threads
+
+  The run goals enable virtual-thread based connector executors by default when the plugin is running on Java 21 or later.
+  On Java 8 through Java 20, the plugin automatically falls back to Tomcat's standard executor so existing builds keep working.
+
+  If you want to turn this behavior off explicitly, configure the plugin like this:
+
++---------------------
+  <plugin>
+    <groupId>org.apache.tomcat.maven</groupId>
+    <artifactId>tomcat9-maven-plugin</artifactId>
+    <version>${project.version}</version>
+    <configuration>
+      <useVirtualThreads>false</useVirtualThreads>
+    </configuration>
+  </plugin>
+
++---------------------
+
+  You can also disable it from the command line with <<<-Dmaven.tomcat.useVirtualThreads=false>>>.
+
 * Use it with selenium mojo
 
   You can use this mojo to start your application in a Tomcat instance and run your selenium test against this instance.
