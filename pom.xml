@@ -74,9 +74,7 @@
     <its.ajp.port>2001</its.ajp.port>
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
-    <tomcat7Version>7.0.109</tomcat7Version>
-    <tomcat8Version>8.5.100</tomcat8Version>
-
+    <tomcat9Version>9.0.96</tomcat9Version>
     <!-- to prevent isssues with last apache parent pom -->
     <arguments />
 
@@ -321,10 +319,6 @@
   <modules>
     <module>common-tomcat-maven-plugin</module>
     <module>tomcat-maven-plugin-it</module>
-    <module>tomcat7-war-runner</module>
-    <module>tomcat7-maven-plugin</module>
-    <module>tomcat8-war-runner</module>
-    <module>tomcat8-maven-plugin</module>
     <module>tomcat9-war-runner</module>
     <module>tomcat9-maven-plugin</module>
     <module>tomcat-maven-archetype</module>
@@ -342,138 +336,27 @@
       <dependency>
         <groupId>org.apache.tomcat.embed</groupId>
         <artifactId>tomcat-embed-core</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat9Version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-util</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-coyote</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-api</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jdbc</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-dbcp</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-servlet-api</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jsp-api</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jasper</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jasper-el</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-el-api</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat9Version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-tribes</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-catalina-ha</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-annotations-api</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-i18n-es</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-i18n-fr</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-i18n-ja</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat7Version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-logging-juli</artifactId>
-        <version>${tomcat7Version}</version>
+        <version>${tomcat9Version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-logging-log4j</artifactId>
-        <version>${tomcat7Version}</version>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-servlet-api</artifactId>
+        <version>${tomcat9Version}</version>
       </dependency>
-
-
-      <!-- end tomcat dependencies -->
-
       <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-war-runner</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-	  
-	  <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat8-war-runner</artifactId>
-        <version>${project.version}</version>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jsp-api</artifactId>
+        <version>${tomcat9Version}</version>
       </dependency>
 
       <dependency>

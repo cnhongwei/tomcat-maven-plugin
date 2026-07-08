@@ -67,13 +67,8 @@ public class ExternalRepositoriesReloadableWebappLoader
         this.log = log;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void addRepository( String repository )
     {
-        super.addRepository( repository );
         try
         {
             File file = new File( new URL( repository ).getPath().replaceAll( "%20", " " ) );

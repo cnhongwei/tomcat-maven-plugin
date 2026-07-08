@@ -50,28 +50,28 @@ Context Goals
 
  The goals required to redeploy a WAR project depend upon how it was deployed:
 
- * To redeploy a WAR project deployed by <<<tomcat:deploy>>> you can type:
+* To redeploy a WAR project deployed by <<<tomcat:deploy>>> you can type:
 
 +--
-mvn package tomcat7/8:redeploy
+mvn package tomcat9:redeploy
 +--
 
  * To redeploy a WAR project deployed by <<<tomcat:exploded>>> you can type:
 
 +--
-mvn war:exploded tomcat7/8:redeploy
+mvn war:exploded tomcat9:redeploy
 +--
 
  * To redeploy a WAR project deployed by <<<tomcat:inplace>>> you can type:
 
 +--
-mvn war:inplace tomcat7/8:redeploy
+mvn war:inplace tomcat9:redeploy
 +--
 
  * To redeploy a context.xml file deployed by <<<tomcat:deploy>>> you can type:
 
 +--
-mvn tomcat7/8:redeploy
+mvn tomcat9:redeploy
 +--
 
  <<Note:>> Depending on the <<<docBase>>> specified in the <<<context.xml>>> you
@@ -82,7 +82,7 @@ mvn tomcat7/8:redeploy
  To undeploy a WAR from Tomcat you can type:
 
 +--
-mvn tomcat7/8:undeploy
+mvn tomcat9:undeploy
 +--
 
 * {Starting a WAR project}
@@ -90,7 +90,7 @@ mvn tomcat7/8:undeploy
  To start a WAR in Tomcat you can type:
 
 +--
-mvn tomcat7/8:start
+mvn tomcat9:start
 +--
 
 * {Stopping a WAR project}
@@ -98,7 +98,7 @@ mvn tomcat7/8:start
  To stop a WAR in Tomcat you can type:
 
 +--
-mvn tomcat7/8:stop
+mvn tomcat9:stop
 +--
 
 * {Listing session statistics}
@@ -106,5 +106,5 @@ mvn tomcat7/8:stop
  To list the session statistics for a deployed WAR project you can type:
 
 +--
-mvn tomcat7/8:sessions
+mvn tomcat9:sessions
 +--

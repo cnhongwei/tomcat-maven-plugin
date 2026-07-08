@@ -98,7 +98,7 @@ public interface HelloService
 
 ** Running the webapp
 
-  From the top directory, you can use: mvn tomcat7:run or mvn tomcat8:run (depends on tomcat version you want).
+  From the top directory, you can use: mvn tomcat9:run.
 
   Now hit your browser http://localhost:9090 and you will use a very complicated hello world webapp sample
 
@@ -120,4 +120,4 @@ java -jar basic-webapp-exec-1.0-SNAPSHOT-war-exec.jar -httpPort 9191
 
   And go to http://localhost:9191 with a browser.
 
-  So you now have a Tomcat 7 instance running this fabulous application without needing to install anything!
+  So you now have a Tomcat 9 instance running this fabulous application without needing to install anything!

@@ -28,9 +28,9 @@
 
 Build an Executable War/Jar
 
- Starting with Version 2.0 of the plugin you can build an executable war/jar with an embedded Apache Tomcat7.
+ Starting with Version 2.0 of the plugin you can build an executable war/jar with an embedded Apache Tomcat9.
 
- This is only supported with the tomcat7 plugin.
+ This is supported with the tomcat9 plugin.
 
  <<Note>> Your project must have a packaging value of <<<pom>>> or <<<war>>>.
 
@@ -47,7 +47,7 @@ Build an Executable War/Jar
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
           <execution>
@@ -88,7 +88,7 @@ Build an Executable War/Jar
       ...
       <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
-        <artifactId>tomcat7-maven-plugin</artifactId>
+        <artifactId>tomcat9-maven-plugin</artifactId>
         <version>${project.version}</version>
         <executions>
           <execution>
@@ -174,4 +174,3 @@ usage: java -jar [path to your exec war jar]
  -X,--debug                             debug
 
 +------
-

@@ -30,9 +30,7 @@ Apache Tomcat Maven Plugin
 
   This is the new home for the Tomcat Maven Plugin (previously hosted at Codehaus).
 
-  Version ${project.version} has the following new features:
-
-  * Apache Tomcat7 support
+  Version ${project.version} focuses on Apache Tomcat 9 support.
 
   * {{{./executable-war-jar.html}Build an Executable War/Jar}}
 
@@ -45,9 +43,9 @@ Apache Tomcat Maven Plugin
   Or to run your war project with an embedded Apache Tomcat. The run goals give you the opportunity to quickly develop your application without needing
   to install a standalone Tomcat instance. More details and features: {{{./run-mojo-features.html}see documentation}}.
 
-* groupId and Mojo name change
+* Plugin coordinates
 
-  Since version 2.0-beta-1 tomcat mojos has been renamed to tomcat6 and tomcat7 with the same goals.
+  This fork only maintains the Tomcat 9 Maven plugin.
 
   You must configure your pom to use this new groupId:
 
@@ -56,12 +54,7 @@ Apache Tomcat Maven Plugin
       <plugins>
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat7-maven-plugin</artifactId>
-          <version>${project.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
-          <artifactId>tomcat8-maven-plugin</artifactId>
+          <artifactId>tomcat9-maven-plugin</artifactId>
           <version>${project.version}</version>
         </plugin>
       </plugins>
@@ -92,8 +85,4 @@ Apache Tomcat Maven Plugin
 
 * Known limitations
 
-  Some goals are not yet available with the tomcat7 mojo. Those {{{./container-goals.html}container goals}} are available with
-  the tomcat6 mojo, you only need to update the manager url in your pom.
-
-  Use <<<http://localhost:8080/manager/text>>> rather than the default tomcat6 url.
-
+  This fork only documents and validates Tomcat 9 behavior. Legacy plugin variants are not part of this codebase.

@@ -46,9 +46,6 @@ Test staged Tomcat artifacts
 To test staging artifacts for a vote process.
 * activate a profile: tc-staging
 * pass staging repository as parameter: -DtcStagedReleaseUrl=
-* pass tomcat version as parameter: -Dtomcat7Version=
+* pass tomcat version as parameter: -Dtomcat9Version=
 
-Sample for tomcat8 artifacts: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=stagingrepositoryurl -Dtomcat8Version=8.x
-
-Sample for tomcat7 artifacts: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=stagingrepositoryurl -Dtomcat7Version=7.x
-
+Sample for tomcat9 artifacts: mvn clean install -Prun-its -Ptc-staging -DtcStagedReleaseUrl=stagingrepositoryurl -Dtomcat9Version=9.x
