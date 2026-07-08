@@ -177,13 +177,14 @@ public abstract class AbstractRunMojo
      * NOTE The ajp connector will be started only if {@link #ajpPort} > 0.
      * possible values are:
      * <ul>
-     * <li>org.apache.coyote.ajp.AjpProtocol - new blocking Java connector that supports an executor</li>
+     * <li>org.apache.coyote.ajp.AjpNioProtocol - the default Java NIO connector.</li>
+     * <li>org.apache.coyote.ajp.AjpNio2Protocol - the Java NIO2 connector.</li>
      * <li>org.apache.coyote.ajp.AjpAprProtocol - the APR/native connector.</li>
      * </ul>
      *
      * @since 2.0
      */
-    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpProtocol" )
+    @Parameter( property = "maven.tomcat.ajp.protocol", defaultValue = "org.apache.coyote.ajp.AjpNioProtocol" )
     private String ajpProtocol;
 
     /**
@@ -1235,6 +1236,7 @@ public abstract class AbstractRunMojo
                     ajpConnector.setPort( ajpPort );
                     ajpConnector.setURIEncoding( uriEncoding );
                     ajpConnector.setUseBodyEncodingForURI( this.useBodyEncodingForURI );
+                    ajpConnector.setAttribute( "secretRequired", false );
                     if ( address != null )
                     {
                         ajpConnector.setAttribute( "address", address );

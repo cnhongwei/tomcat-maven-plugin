@@ -106,9 +106,9 @@ public final class EmbeddedRegistry
             Object embedded = iterator.next();
             try
             {
-                Method method = embedded.getClass().getMethod( "stop", null );
-                method.invoke( embedded, null );
-                embedded.getClass().getMethod( "destroy", null ).invoke( embedded, null );
+                Method method = embedded.getClass().getMethod( "stop" );
+                method.invoke( embedded );
+                invokeDestroyIfPresent( embedded );
                 iterator.remove();
             }
             catch ( NoSuchMethodException e )
@@ -116,7 +116,7 @@ public final class EmbeddedRegistry
                 if ( firstException == null )
                 {
                     firstException = e;
-                    error( log, e, "no stop/destroy method in class " + embedded.getClass().getName() );
+                    error( log, e, "no stop method in class " + embedded.getClass().getName() );
                 }
                 else
                 {
@@ -152,6 +152,20 @@ public final class EmbeddedRegistry
         if ( firstException != null )
         {
             throw firstException;
+        }
+    }
+
+    private void invokeDestroyIfPresent( final Object embedded )
+        throws IllegalAccessException, InvocationTargetException
+    {
+        try
+        {
+            Method method = embedded.getClass().getMethod( "destroy" );
+            method.invoke( embedded );
+        }
+        catch ( NoSuchMethodException e )
+        {
+            // Newer Tomcat Catalina versions no longer expose destroy().
         }
     }
 

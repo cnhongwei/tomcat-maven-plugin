@@ -1,4 +1,7 @@
 package org.apache.tomcat.maven.it;
+
+import org.junit.Test;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,23 +20,11 @@ package org.apache.tomcat.maven.it;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.it.VerificationException;
-
-/**
- * @author Olivier Lamy
- */
-public class Tomcat9RunMultiConfigIT
-    extends AbstractTomcatRunMultiConfigIT
-{
-    @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
-    {
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"https-jsse-nio-" + getHttpsItPort()
-            + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-nio-127.0.0.1-" + getAjpItPort()
-            + "\"]");
-    }
+@SuppressWarnings({"WrongPackageStatement"})
+public final class WaitIT {
+  @Test
+  public void testWait() throws Exception {
+    System.out.println("Just wait a while...");
+    Thread.sleep(${it.sleep.time});
+  }
 }

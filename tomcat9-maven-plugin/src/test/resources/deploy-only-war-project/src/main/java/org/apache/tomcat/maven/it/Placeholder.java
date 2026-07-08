@@ -1,4 +1,5 @@
 package org.apache.tomcat.maven.it;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,22 +19,10 @@ package org.apache.tomcat.maven.it;
  * under the License.
  */
 
-import org.apache.maven.it.VerificationException;
-
-/**
- * @author Olivier Lamy
- */
-public class Tomcat9RunMultiConfigIT
-    extends AbstractTomcatRunMultiConfigIT
+public final class Placeholder
 {
-    @Override
-    protected void verifyConnectorsStarted()
-        throws VerificationException
+    private Placeholder()
     {
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"http-nio-" + getHttpItPort() + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"https-jsse-nio-" + getHttpsItPort()
-            + "\"]");
-        verifier.verifyTextInLog("INFO: Starting ProtocolHandler [\"ajp-nio-127.0.0.1-" + getAjpItPort()
-            + "\"]");
+        // Utility holder to ensure the sample project produces target/classes.
     }
 }
