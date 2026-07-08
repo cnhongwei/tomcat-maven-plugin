@@ -23,7 +23,7 @@
     <parent>
         <artifactId>tomcat-maven-plugin</artifactId>
         <groupId>io.github.cnhongwei</groupId>
-        <version>3.0.0</version>
+        <version>3.0.96-SNAPSHOT</version>
     </parent>
     <artifactId>tomcat9-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
