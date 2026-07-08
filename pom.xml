@@ -839,6 +839,10 @@
             <extensions>true</extensions>
             <configuration>
               <publishingServerId>${centralPublishingServerId}</publishingServerId>
+              <excludeArtifacts>
+                <excludeArtifact>tomcat-maven-plugin-it</excludeArtifact>
+                <excludeArtifact>tomcat-maven-archetype</excludeArtifact>
+              </excludeArtifacts>
               <autoPublish>true</autoPublish>
               <waitUntil>published</waitUntil>
             </configuration>
