@@ -35,7 +35,7 @@ Adjust Tomcat Version
 <project>
    [...]
   <properties>
-   <tomcat.version>9.0.0</tomcat.version>
+   <tomcat.version>${tomcat9Version}</tomcat.version>
    [...]
   </properties>
    [...]

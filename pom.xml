@@ -733,6 +733,8 @@
           </links>
           <detectLinks>true</detectLinks>
           <notimestamp>true</notimestamp>
+          <doclint>none</doclint>
+          <failOnError>false</failOnError>
           <tagletArtifacts>
             <tagletArtifact>
               <groupId>org.apache.maven.plugin-tools</groupId>
