@@ -16,6 +16,7 @@ Avoid editing `target/`; it is generated output.
 - `mvn clean install`: full multi-module build with compilation and tests.
 - `mvn -pl tomcat9-maven-plugin -am test`: test the main plugin and required upstream modules.
 - `mvn -pl common-tomcat-maven-plugin test`: run unit tests for shared utilities.
+- `mvn -pl tomcat9-maven-plugin -am -Prun-its verify`: run the Tomcat 9 integration tests.
 - `mvn -DskipTests clean verify`: fast verification when changing build metadata or docs.
 - `mvn -Prelease-central -DskipTests -pl tomcat9-maven-plugin -am clean deploy`: publish the Tomcat 9 plugin and required artifacts to Maven Central.
 
@@ -28,6 +29,12 @@ Java sources use standard 4-space indentation and conventional Maven/Apache nami
 JUnit 4 is used for tests. Unit tests live in `src/test/java`; integration-style support code lives in `tomcat-maven-plugin-it`. Prefer focused tests near the module you changed. For plugin behavior changes, run:
 
 `mvn -pl tomcat9-maven-plugin -am test`
+
+To execute the Tomcat 9 integration tests, run:
+
+`mvn -pl tomcat9-maven-plugin -am -Prun-its verify`
+
+`tomcat-maven-plugin-it` provides shared integration-test support code. The actual integration tests are declared in `tomcat9-maven-plugin` and are only enabled when the `run-its` profile is active.
 
 For broad dependency or packaging changes, run `mvn clean install` before opening a PR.
 
