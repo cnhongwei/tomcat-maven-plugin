@@ -26,10 +26,10 @@ import ${package}.api.HelloService;
 
 import junit.framework.TestCase;
 import org.apache.catalina.Context;
-import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.apache.cxf.transport.servlet.CXFServlet;
+import org.apache.tomcat.util.descriptor.web.ApplicationParameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +66,7 @@ public class TestDefaultHelloService
         context.addApplicationListener( ContextLoaderListener.class.getName() );
 
         Tomcat.addServlet( context, "cxf", new CXFServlet() );
-        context.addServletMapping( "/" + getRestServicesPath() + "/*", "cxf" );
+        context.addServletMappingDecoded( "/" + getRestServicesPath() + "/*", "cxf" );
 
         tomcat.start();
 

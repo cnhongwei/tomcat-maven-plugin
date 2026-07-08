@@ -33,7 +33,7 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.tomcat.maven</groupId>
+          <groupId>io.github.cnhongwei</groupId>
           <artifactId>tomcat9-maven-plugin</artifactId>
           <configuration>
             <port>9090</port>

@@ -22,12 +22,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>tomcat-maven-plugin</artifactId>
-        <groupId>org.apache.tomcat.maven</groupId>
-        <version>3.0-SNAPSHOT</version>
+        <groupId>io.github.cnhongwei</groupId>
+        <version>3.0.0</version>
     </parent>
     <artifactId>tomcat9-war-runner</artifactId>
-    <version>3.0-SNAPSHOT</version>
-    <name>Apache Tomcat Maven Plugin :: Tomcat 9.x War Runner</name>
+    <version>3.0.0</version>
+    <name>Tomcat Maven Plugin Fork :: Tomcat 9.x War Runner</name>
   
     <properties>
         <tomcat9Version>9.0.96</tomcat9Version>

@@ -20,17 +20,18 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.apache.tomcat.maven</groupId>
+    <groupId>io.github.cnhongwei</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>tomcat-maven-plugin-it</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Tomcat Maven Plugin :: Integration Tests</name>
+  <name>Tomcat Maven Plugin Fork :: Integration Tests</name>
 
   <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <!-- The time to wait between startup and shutdown of tomcat. Realized by a test which waits for the specified
          time. -->
     <it.sleep.time>2000</it.sleep.time>

@@ -20,24 +20,17 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <!-- for more information, see the documentation of this POM: http://maven.apache.org/pom/maven/ -->
-  <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>12</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.tomcat.maven</groupId>
+  <groupId>io.github.cnhongwei</groupId>
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
-  <name>Apache Tomcat Maven Plugin</name>
-  <version>3.0-SNAPSHOT</version>
-  <description>The Tomcat Maven Plugin provides goals to manipulate WAR projects within the Tomcat servlet
+  <name>Tomcat Maven Plugin Fork</name>
+  <version>3.0.0</version>
+  <description>A maintained fork of the Tomcat Maven Plugin that provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
 
-  <url>${siteUrl}</url>
+  <url>https://github.com/cnhongwei/tomcat-maven-plugin</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,14 +50,8 @@
     <it.sleep.time>2000</it.sleep.time>
     <verifier.maven.debug>false</verifier.maven.debug>
     <verifier.debugJvm>false</verifier.debugJvm>
-    <distributionReleaseUrl>https://repository.apache.org/service/local/staging/deploy/maven2</distributionReleaseUrl>
-
-    <distributionSnapshotsUrl>https://repository.apache.org/content/repositories/snapshots</distributionSnapshotsUrl>
-    <distributionIdSnapshots>apache.snapshots.https</distributionIdSnapshots>
-
-    <distributionSiteUrl>scp://people.apache.org/www/tomcat.apache.org/maven-plugin-${project.version}</distributionSiteUrl>
-    <sitePath>maven-plugin-trunk</sitePath>
-    <siteUrl>http://tomcat.apache.org/${sitePath}</siteUrl>
+    <centralPublishingServerId>central</centralPublishingServerId>
+    <projectUrl>https://github.com/cnhongwei/tomcat-maven-plugin</projectUrl>
 
     <!-- http port used to run it test -->
     <its.http.port>1973</its.http.port>
@@ -75,34 +62,21 @@
     <!-- server port for it tests -->
     <its.server.port>2008</its.server.port>
     <tomcat9Version>9.0.96</tomcat9Version>
-    <!-- to prevent isssues with last apache parent pom -->
     <arguments />
-
-    <tomcat-maven.siteFilePath>${user.home}/tomcat-maven-plugin-${project.version}/</tomcat-maven.siteFilePath>
-    <tomcat-maven.siteUrlDeployment>file://${tomcat-maven.siteFilePath}</tomcat-maven.siteUrlDeployment>
-    <tomcat-maven.scmPubCheckoutDirectory>${user.home}/tomcat-maven-plugin-${project.version}-content</tomcat-maven.scmPubCheckoutDirectory>
 
   </properties>
 
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
   <inceptionYear>2005</inceptionYear>
 
   <developers>
     <developer>
-      <id>mhobson</id>
-      <name>Mark Hobson</name>
-      <email>markhobson@gmail.com</email>
+      <id>cnhongwei</id>
+      <name>cnhongwei</name>
+      <url>https://github.com/cnhongwei</url>
       <roles>
-        <role>Lead Developer</role>
+        <role>Maintainer</role>
       </roles>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>olamy</id>
-      <name>Olivier Lamy</name>
-      <email>olamy@apache.org</email>
+      <timezone>Asia/Shanghai</timezone>
     </developer>
   </developers>
 
@@ -207,8 +181,8 @@
 
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
 
@@ -302,18 +276,19 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/tomcat/maven-plugin/trunk/</developerConnection>
-    <url>http://svn.apache.org/viewvc/tomcat/maven-plugin/</url>
+    <connection>scm:git:https://github.com/cnhongwei/tomcat-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:cnhongwei/tomcat-maven-plugin.git</developerConnection>
+    <url>https://github.com/cnhongwei/tomcat-maven-plugin</url>
   </scm>
 
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.apache.org/jira/browse/MTOMCAT</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/cnhongwei/tomcat-maven-plugin/issues</url>
   </issueManagement>
 
   <ciManagement>
-    <url>https://builds.apache.org/job/TomcatMavenPlugin/</url>
+    <system>GitHub Actions</system>
+    <url>https://github.com/cnhongwei/tomcat-maven-plugin/actions</url>
   </ciManagement>
 
   <modules>
@@ -367,12 +342,12 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
+        <groupId>io.github.cnhongwei</groupId>
         <artifactId>common-tomcat-maven-plugin</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.tomcat.maven</groupId>
+        <groupId>io.github.cnhongwei</groupId>
         <artifactId>tomcat-maven-plugin-it</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -662,6 +637,7 @@
               <exclude>.gitignore</exclude>
               <exclude>DEPENDENCIES</exclude>
               <exclude>README.txt</exclude>
+              <exclude>AGENTS.md</exclude>
               <exclude>*.sh</exclude>
               <exclude>*.log</exclude>
               <exclude>.git/**</exclude>
@@ -674,18 +650,6 @@
           </configuration>
         </plugin>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/tomcat/site/trunk/docs/${sitePath}</pubScmUrl>
-            <checkinComment>Apache Tomcat Maven Plugin site documentation for ${project.version}</checkinComment>
-            <content>${tomcat-maven.siteFilePath}</content>
-            <checkoutDirectory>${tomcat-maven.scmPubCheckoutDirectory}</checkoutDirectory>
-            <tryUpdate>true</tryUpdate>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
@@ -729,24 +693,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
-    <repository>
-      <id>apache.releases.https</id>
-      <name>Apache Release Distribution Repository</name>
-      <url>${distributionReleaseUrl}</url>
-    </repository>
-
-    <snapshotRepository>
-      <id>${distributionIdSnapshots}</id>
-      <name>Apache Development Snapshot Repository</name>
-      <url>${distributionSnapshotsUrl}</url>
-    </snapshotRepository>
-    <site>
-      <id>apache.website</id>
-      <url>${tomcat-maven.siteUrlDeployment}</url>
-    </site>
-  </distributionManagement>
 
   <reporting>
     <plugins>
@@ -827,6 +773,72 @@
   </reporting>
 
   <profiles>
+    <profile>
+      <id>release-central</id>
+      <properties>
+        <archetype.test.skip>true</archetype.test.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.11.2</version>
+            <configuration>
+              <source>${maven.compiler.source}</source>
+              <doclint>none</doclint>
+              <failOnError>false</failOnError>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.11.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>${centralPublishingServerId}</publishingServerId>
+              <autoPublish>true</autoPublish>
+              <waitUntil>published</waitUntil>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>site-release</id>
       <properties>

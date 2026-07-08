@@ -21,9 +21,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.apache.tomcat.maven</groupId>
+    <groupId>io.github.cnhongwei</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -33,9 +33,10 @@
 
   <packaging>maven-archetype</packaging>
 
-  <name>Apache Tomcat Maven Plugin :: Archetype</name>
+  <name>Tomcat Maven Plugin Fork :: Archetype</name>
 
   <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <archetypeVersion>3.1.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
     <archetypeItGoalsBatch>clean,pre-integration-test</archetypeItGoalsBatch>
