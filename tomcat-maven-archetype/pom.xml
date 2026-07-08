@@ -39,6 +39,7 @@
     <maven.deploy.skip>true</maven.deploy.skip>
     <archetypeVersion>3.1.2</archetypeVersion>
     <tomcatPluginVersion>${project.version}</tomcatPluginVersion>
+    <archetype.test.skip>true</archetype.test.skip>
     <archetypeItGoalsBatch>clean,pre-integration-test</archetypeItGoalsBatch>
     <archetypeItGoals>clean,install</archetypeItGoals>
   </properties>
@@ -95,6 +96,9 @@
   <profiles>
     <profile>
       <id>run-its</id>
+      <properties>
+        <archetype.test.skip>false</archetype.test.skip>
+      </properties>
       <build>
         <plugins>
           <plugin>
