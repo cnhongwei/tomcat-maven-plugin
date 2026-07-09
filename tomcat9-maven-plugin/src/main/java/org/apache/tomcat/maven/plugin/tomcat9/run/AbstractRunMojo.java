@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,6 +73,7 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -80,9 +82,12 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFileFilterRequest;
 import org.apache.maven.shared.filtering.MavenFilteringException;
+import org.apache.maven.toolchain.Toolchain;
+import org.apache.maven.toolchain.ToolchainManager;
 import org.apache.tomcat.JarScanner;
 import org.apache.tomcat.maven.common.config.AbstractWebapp;
 import org.apache.tomcat.maven.common.run.EmbeddedRegistry;
+import org.apache.tomcat.maven.common.run.ExternalProcessContainer;
 import org.apache.tomcat.maven.common.run.ExternalRepositoriesReloadableWebappLoader;
 import org.apache.tomcat.maven.plugin.tomcat9.AbstractTomcat9Mojo;
 import org.apache.tomcat.util.scan.StandardJarScanner;
@@ -91,6 +96,7 @@ import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.launcher.Launcher;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.util.DirectoryScanner;
@@ -107,6 +113,8 @@ import org.xml.sax.SAXException;
 public abstract class AbstractRunMojo
     extends AbstractTomcat9Mojo
 {
+    static final String TOOLCHAIN_FORKED_INVOCATION_PROPERTY = "maven.tomcat.internal.toolchainInvocation";
+
     // ---------------------------------------------------------------------
     // Mojo Components
     // ---------------------------------------------------------------------
@@ -461,6 +469,9 @@ public abstract class AbstractRunMojo
     @Parameter( defaultValue = "${session}", readonly = true, required = true )
     protected MavenSession session;
 
+    @Parameter( defaultValue = "${mojoExecution}", readonly = true, required = true )
+    protected MojoExecution mojoExecution;
+
     /**
      * Will dump port in a properties file (see ports for property names).
      * If empty no file generated
@@ -496,6 +507,9 @@ public abstract class AbstractRunMojo
 
     @Component( role = MavenFileFilter.class, hint = "default" )
     protected MavenFileFilter mavenFileFilter;
+
+    @Component
+    protected ToolchainManager toolchainManager;
 
 
     /**
@@ -596,6 +610,20 @@ public abstract class AbstractRunMojo
             getLog().info( messagesProvider.getMessage( "AbstractRunMojo.nonWar" ) );
             return;
         }
+        String toolchainJavaExecutable = getToolchainJavaExecutable();
+        if ( toolchainJavaExecutable != null )
+        {
+            getLog().info( "Using toolchain Java executable: " + toolchainJavaExecutable );
+            executeViaToolchainMaven( toolchainJavaExecutable );
+            return;
+        }
+        getLog().info( "No JDK toolchain selected for this build; using the current Maven JVM." );
+        executeInCurrentJvm();
+    }
+
+    protected void executeInCurrentJvm()
+        throws MojoExecutionException, MojoFailureException
+    {
         ClassLoader originalClassLoader = null;
         if ( useSeparateTomcatClassLoader )
         {
@@ -636,6 +664,218 @@ public abstract class AbstractRunMojo
                 Thread.currentThread().setContextClassLoader( originalClassLoader );
             }
         }
+    }
+
+    protected String getToolchainJavaExecutable()
+        throws MojoExecutionException
+    {
+        if ( Boolean.parseBoolean( System.getProperty( TOOLCHAIN_FORKED_INVOCATION_PROPERTY ) ) )
+        {
+            getLog().debug( "Already running inside the toolchain bootstrap JVM; skipping toolchain lookup." );
+            return null;
+        }
+
+        if ( toolchainManager == null || session == null )
+        {
+            return null;
+        }
+
+        Toolchain toolchain = toolchainManager.getToolchainFromBuildContext( "jdk", session );
+        if ( toolchain == null )
+        {
+            return null;
+        }
+
+        String javaExecutable = toolchain.findTool( "java" );
+        if ( StringUtils.isEmpty( javaExecutable ) )
+        {
+            throw new MojoExecutionException(
+                "Found a JDK toolchain in the Maven build context, but it does not define a java executable." );
+        }
+
+        return javaExecutable;
+    }
+
+    protected void executeViaToolchainMaven( String javaExecutable )
+        throws MojoExecutionException
+    {
+        List<String> command = buildToolchainMavenCommand( javaExecutable );
+
+        ProcessBuilder processBuilder = new ProcessBuilder( command );
+        processBuilder.directory( project.getBasedir() );
+        processBuilder.inheritIO();
+
+        File javaHome = getJavaHome( javaExecutable );
+        processBuilder.environment().put( "JAVA_HOME", javaHome.getAbsolutePath() );
+        processBuilder.environment().put( "JDK_HOME", javaHome.getAbsolutePath() );
+
+        try
+        {
+            Process process = processBuilder.start();
+
+            if ( fork )
+            {
+                EmbeddedRegistry.getInstance().register(
+                    new ExternalProcessContainer( process, "Toolchain Maven process for " + project.getArtifactId() ) );
+                try
+                {
+                    Thread.sleep( 500L );
+                }
+                catch ( InterruptedException e )
+                {
+                    Thread.currentThread().interrupt();
+                }
+                if ( !process.isAlive() )
+                {
+                    throw new MojoExecutionException(
+                        "Toolchain Maven process exited early with code " + process.exitValue() );
+                }
+                return;
+            }
+
+            int exitCode = process.waitFor();
+            if ( exitCode != 0 )
+            {
+                throw new MojoExecutionException( "Toolchain Maven process exited with code " + exitCode );
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Unable to launch Maven with the selected toolchain JDK.", e );
+        }
+        catch ( InterruptedException e )
+        {
+            Thread.currentThread().interrupt();
+            throw new MojoExecutionException( "Interrupted while waiting for the toolchain Maven process.", e );
+        }
+    }
+
+    protected List<String> buildToolchainMavenCommand( String javaExecutable )
+        throws MojoExecutionException
+    {
+        File launcherJar = getLauncherJar();
+        List<String> command = new ArrayList<String>();
+        command.add( javaExecutable );
+        command.add( "-classpath" );
+        command.add( launcherJar.getAbsolutePath() );
+        addSystemPropertyArgument( command, "classworlds.conf" );
+        addSystemPropertyArgument( command, "maven.home" );
+        addSystemPropertyArgument( command, "maven.multiModuleProjectDirectory" );
+        addSystemPropertyArgument( command, "maven.ext.class.path" );
+        command.add( Launcher.class.getName() );
+        command.add( "-B" );
+        if ( local != null && StringUtils.isNotEmpty( local.getBasedir() ) )
+        {
+            command.add( "-Dmaven.repo.local=" + local.getBasedir() );
+        }
+        addUserProperties( command );
+        command.add( "-D" + TOOLCHAIN_FORKED_INVOCATION_PROPERTY + "=true" );
+        command.add( "-Dmaven.tomcat.fork=false" );
+        addActiveProfiles( command );
+        command.add( "-f" );
+        command.add( project.getFile().getAbsolutePath() );
+        command.add( getInvocationTarget() );
+        return command;
+    }
+
+    protected File getLauncherJar()
+        throws MojoExecutionException
+    {
+        try
+        {
+            return new File( Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
+        }
+        catch ( URISyntaxException e )
+        {
+            throw new MojoExecutionException( "Unable to locate the Maven launcher jar for toolchain re-invocation.", e );
+        }
+    }
+
+    protected File getJavaHome( String javaExecutable )
+        throws MojoExecutionException
+    {
+        File javaFile = new File( javaExecutable );
+        File binDirectory = javaFile.getParentFile();
+        File javaHome = binDirectory == null ? null : binDirectory.getParentFile();
+        if ( javaHome == null )
+        {
+            throw new MojoExecutionException( "Unable to derive JAVA_HOME from toolchain executable: " + javaExecutable );
+        }
+        return javaHome;
+    }
+
+    protected String getInvocationTarget()
+        throws MojoExecutionException
+    {
+        if ( mojoExecution == null || mojoExecution.getMojoDescriptor() == null
+            || mojoExecution.getMojoDescriptor().getPluginDescriptor() == null )
+        {
+            throw new MojoExecutionException( "Unable to determine the current Maven goal for toolchain re-invocation." );
+        }
+
+        StringBuilder builder = new StringBuilder()
+            .append( mojoExecution.getMojoDescriptor().getPluginDescriptor().getGroupId() )
+            .append( ':' )
+            .append( mojoExecution.getMojoDescriptor().getPluginDescriptor().getArtifactId() )
+            .append( ':' )
+            .append( mojoExecution.getMojoDescriptor().getPluginDescriptor().getVersion() )
+            .append( ':' )
+            .append( mojoExecution.getMojoDescriptor().getGoal() );
+
+        if ( StringUtils.isNotEmpty( mojoExecution.getExecutionId() )
+            && !MojoExecution.CLI_EXECUTION_ID.equals( mojoExecution.getExecutionId() ) )
+        {
+            builder.append( '@' ).append( mojoExecution.getExecutionId() );
+        }
+
+        return builder.toString();
+    }
+
+    private void addSystemPropertyArgument( List<String> command, String propertyName )
+    {
+        String value = System.getProperty( propertyName );
+        if ( StringUtils.isNotEmpty( value ) )
+        {
+            command.add( "-D" + propertyName + "=" + value );
+        }
+    }
+
+    private void addUserProperties( List<String> command )
+    {
+        Properties userProperties = session.getUserProperties();
+        for ( String propertyName : userProperties.stringPropertyNames() )
+        {
+            if ( TOOLCHAIN_FORKED_INVOCATION_PROPERTY.equals( propertyName ) )
+            {
+                continue;
+            }
+            String value = userProperties.getProperty( propertyName );
+            if ( value != null )
+            {
+                command.add( "-D" + propertyName + "=" + value );
+            }
+        }
+    }
+
+    private void addActiveProfiles( List<String> command )
+    {
+        @SuppressWarnings( "unchecked" ) List<org.apache.maven.model.Profile> activeProfiles = project.getActiveProfiles();
+        if ( activeProfiles == null || activeProfiles.isEmpty() )
+        {
+            return;
+        }
+
+        StringBuilder profileList = new StringBuilder();
+        for ( org.apache.maven.model.Profile activeProfile : activeProfiles )
+        {
+            if ( profileList.length() > 0 )
+            {
+                profileList.append( ',' );
+            }
+            profileList.append( activeProfile.getId() );
+        }
+        command.add( "-P" );
+        command.add( profileList.toString() );
     }
 
     // ----------------------------------------------------------------------

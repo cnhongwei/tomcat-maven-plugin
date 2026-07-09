@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -40,7 +40,7 @@ public abstract class AbstractDeployWarOnlyProjectIT
     @Override
     protected String getWebappUrl()
     {
-        return "http://localhost:" + getHttpItPort() + "/bar/";
+        return "http://127.0.0.1:" + getHttpItPort() + "/bar/";
     }
 
     @Override
@@ -55,7 +55,7 @@ public abstract class AbstractDeployWarOnlyProjectIT
     {
         final String responseBody = executeVerifyWithGet();
         assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "It works !!", responseBody );
+        assertTrue( "Response must match expected content.", responseBody.contains( "It works !!" ) );
 
         assertTrue( "Tomcat folder should exist in target folder of project at " + webappHome,
                     new File( webappHome, "target/tomcat" ).exists() );

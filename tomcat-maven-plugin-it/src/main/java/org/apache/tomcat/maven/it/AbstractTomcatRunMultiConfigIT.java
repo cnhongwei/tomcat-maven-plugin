@@ -29,8 +29,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -55,12 +55,12 @@ public abstract class AbstractTomcatRunMultiConfigIT
         try
         {
             return new URI(
-                "http://localhost:" + getHttpItPort() + "/multi-config/index.jsp?string=" + URL_QUERY ).toASCIIString();
+                "http://127.0.0.1:" + getHttpItPort() + "/multi-config/index.jsp?string=" + URL_QUERY ).toASCIIString();
         }
         catch ( URISyntaxException e )
         {
             logger.error( "An exception occurred.", e );
-            return "http://localhost:" + getHttpItPort() + "/multi-config";
+            return "http://127.0.0.1:" + getHttpItPort() + "/multi-config";
         }
     }
 
@@ -76,7 +76,8 @@ public abstract class AbstractTomcatRunMultiConfigIT
     {
         final String responseBody = executeVerifyWithGet();
         assertNotNull( "Received message body from " + getWebappUrl() + " must not be null.", responseBody );
-        assertContains( "Response from " + getWebappUrl() + " must match expected content.", URL_QUERY, responseBody );
+        assertTrue( "Response from " + getWebappUrl() + " must match expected content.",
+                    responseBody.contains( URL_QUERY ) );
 
         final File tomcatFolder = new File( webappHome, "target/tc" );
         final File emptyLocation = new File( tomcatFolder, "conf/empty.txt" );

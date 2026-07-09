@@ -204,6 +204,10 @@ public abstract class AbstractWarProjectIT
     private int pingUrl()
     {
         final HttpHead httpHead = new HttpHead( getWebappUrl() );
+        httpHead.setConfig( RequestConfig.custom() //
+                                .setSocketTimeout( 1000 ) //
+                                .setConnectTimeout( 1000 ) //
+                                .build() );
         try
         {
             final HttpResponse response = httpClient.execute( httpHead );

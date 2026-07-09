@@ -24,8 +24,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static junitx.framework.StringAssert.assertContains;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the example "Using a different context path" as the WAR gets deployed below the contextpath /lorem.
@@ -36,7 +36,7 @@ public class AbstractUsageContextpathIT
     extends AbstractWarProjectIT
 {
 
-    private static final String WEBAPP_URL = "http://localhost:" + getHttpItPort() + "/lorem/index.html";
+    private static final String WEBAPP_URL = "http://127.0.0.1:" + getHttpItPort() + "/lorem/index.html";
 
     /**
      * ArtifactId of the sample WAR project.
@@ -61,7 +61,7 @@ public class AbstractUsageContextpathIT
     {
         final String responseBody = executeVerifyWithGet();
         assertNotNull( "Received message body must not be null.", responseBody );
-        assertContains( "Response must match expected content.", "Success!", responseBody );
+        assertTrue( "Response must match expected content.", responseBody.contains( "Success!" ) );
 
         logger.info( "Error Free Log check" );
         verifier.verifyErrorFreeLog();
