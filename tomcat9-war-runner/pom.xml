@@ -26,12 +26,7 @@
         <version>3.0.121-SNAPSHOT</version>
     </parent>
     <artifactId>tomcat9-war-runner</artifactId>
-    <version>3.0.121-SNAPSHOT</version>
     <name>Tomcat Maven Plugin Fork :: Tomcat 9.x War Runner</name>
-  
-    <properties>
-        <tomcat9Version>9.0.120</tomcat9Version>
-    </properties>
 
     <dependencies>
         <dependency>
