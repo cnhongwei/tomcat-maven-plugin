@@ -24,7 +24,7 @@
   <parent>
     <artifactId>tomcat-maven-plugin</artifactId>
     <groupId>io.github.cnhongwei</groupId>
-    <version>3.0.120-SNAPSHOT</version>
+    <version>3.0.120</version>
   </parent>
   <artifactId>common-tomcat-maven-plugin</artifactId>
   <name>Tomcat Maven Plugin Fork :: Common API</name>
