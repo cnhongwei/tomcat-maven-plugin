@@ -22,6 +22,27 @@ Tomcat Maven Plugin Fork
 
 This repository contains a Maven multi-module fork of the Tomcat Maven Plugin focused on Tomcat 9 support.
 
+Fork capabilities
+-----------------
+
+This fork currently focuses on the Tomcat 9 line and keeps the plugin behavior aligned with that scope.
+
+Supported capabilities include:
+
+* Tomcat 9 plugin goals for local development and deployment workflows
+* embedded Tomcat execution for `run`-style goals
+* automatic Maven `jdk` toolchain support for `run`-style goals
+* zero-configuration fallback to the Maven runtime JDK when no toolchain is selected
+* `exec-war`, `exec-war-only`, and standalone WAR runner packaging flows
+* Maven Central publishing via the `release-central` profile
+
+For the `run`-style goals, the behavior is fixed:
+
+* if Maven build context already contains a selected `jdk` toolchain, the plugin uses that toolchain's `java`
+* if no `jdk` toolchain is available, the plugin keeps using the current Maven JVM
+
+To make the plugin run with a specific JDK, configure `maven-toolchains-plugin` so a `jdk` toolchain is selected before invoking `tomcat9:run`.
+
 Build and test
 --------------
 
@@ -60,12 +81,19 @@ Before releasing, ensure:
 * `MAVEN_CENTRAL_PASSWORD` is set
 * `GPG_PASS` is set
 * the current project version is a `-SNAPSHOT`
+* the Tomcat 9 dependency version is set to the target release line, currently `9.0.120`
+* `mvn -pl tomcat9-maven-plugin -am test` passes
+* `mvn -pl tomcat9-maven-plugin -am -Prun-its verify` passes
 
 The standard release flow is:
 
 1. `mvn release:clean`
 2. `mvn release:prepare -DreleaseVersion=<release-version> -DdevelopmentVersion=<next-snapshot-version>`
 3. `mvn release:perform`
+
+Example for the current line:
+
+`mvn release:prepare -DreleaseVersion=3.0.120 -DdevelopmentVersion=3.0.121-SNAPSHOT`
 
 Testing staged Tomcat artifacts
 -------------------------------

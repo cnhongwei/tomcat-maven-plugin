@@ -30,7 +30,7 @@
     <name>Tomcat Maven Plugin Fork :: Tomcat 9.x War Runner</name>
   
     <properties>
-        <tomcat9Version>9.0.96</tomcat9Version>
+        <tomcat9Version>9.0.120</tomcat9Version>
     </properties>
 
     <dependencies>
