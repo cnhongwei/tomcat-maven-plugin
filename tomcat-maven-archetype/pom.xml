@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.github.cnhongwei</groupId>
     <artifactId>tomcat-maven-plugin</artifactId>
-    <version>3.0.121-SNAPSHOT</version>
+    <version>3.0.121</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
