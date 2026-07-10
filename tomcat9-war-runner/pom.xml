@@ -23,7 +23,7 @@
     <parent>
         <artifactId>tomcat-maven-plugin</artifactId>
         <groupId>io.github.cnhongwei</groupId>
-        <version>3.0.121</version>
+        <version>3.0.122-SNAPSHOT</version>
     </parent>
     <artifactId>tomcat9-war-runner</artifactId>
     <name>Tomcat Maven Plugin Fork :: Tomcat 9.x War Runner</name>

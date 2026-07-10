@@ -25,7 +25,7 @@
   <artifactId>tomcat-maven-plugin</artifactId>
   <packaging>pom</packaging>
   <name>Tomcat Maven Plugin Fork</name>
-  <version>3.0.121</version>
+  <version>3.0.122-SNAPSHOT</version>
   <description>A maintained fork of the Tomcat Maven Plugin that provides goals to manipulate WAR projects within the Tomcat servlet
     container.
   </description>
@@ -279,7 +279,7 @@
     <connection>scm:git:https://github.com/cnhongwei/tomcat-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:cnhongwei/tomcat-maven-plugin.git</developerConnection>
     <url>https://github.com/cnhongwei/tomcat-maven-plugin</url>
-    <tag>3.0.121</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
