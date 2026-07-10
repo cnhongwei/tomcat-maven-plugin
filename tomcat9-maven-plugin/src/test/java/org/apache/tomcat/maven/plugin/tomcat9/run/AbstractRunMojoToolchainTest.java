@@ -90,6 +90,23 @@ public class AbstractRunMojoToolchainTest
     }
 
     @Test
+    public void shouldNotReinvokeMavenWhenDebuggerIsAttached()
+    {
+        TestRunMojo mojo = new TestRunMojo();
+        mojo.debuggerAttached = true;
+
+        assertTrue( !mojo.shouldExecuteViaToolchainMaven( "/toolchains/jdk/bin/java" ) );
+    }
+
+    @Test
+    public void shouldReinvokeMavenWhenDebuggerIsNotAttached()
+    {
+        TestRunMojo mojo = new TestRunMojo();
+
+        assertTrue( mojo.shouldExecuteViaToolchainMaven( "/toolchains/jdk/bin/java" ) );
+    }
+
+    @Test
     public void shouldBuildMavenCommandWithExecutionIdAndForkOverride()
         throws Exception
     {
@@ -107,6 +124,8 @@ public class AbstractRunMojoToolchainTest
     private static final class TestRunMojo
         extends AbstractRunMojo
     {
+        private boolean debuggerAttached;
+
         private TestRunMojo()
         {
             Model model = new Model();
@@ -145,6 +164,12 @@ public class AbstractRunMojoToolchainTest
         protected File getContextFile()
         {
             return null;
+        }
+
+        @Override
+        protected boolean isDebuggerAttached()
+        {
+            return debuggerAttached;
         }
     }
 

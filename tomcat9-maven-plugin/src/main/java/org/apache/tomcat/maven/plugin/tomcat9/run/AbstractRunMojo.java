@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -611,14 +612,40 @@ public abstract class AbstractRunMojo
             return;
         }
         String toolchainJavaExecutable = getToolchainJavaExecutable();
-        if ( toolchainJavaExecutable != null )
+        if ( shouldExecuteViaToolchainMaven( toolchainJavaExecutable ) )
         {
             getLog().info( "Using toolchain Java executable: " + toolchainJavaExecutable );
             executeViaToolchainMaven( toolchainJavaExecutable );
             return;
         }
-        getLog().info( "No JDK toolchain selected for this build; using the current Maven JVM." );
+        if ( toolchainJavaExecutable != null )
+        {
+            getLog().warn( "Debugger detected; using the current Maven JVM instead of the configured toolchain JVM "
+                + "so that IDE debugging remains attached to the embedded Tomcat." );
+        }
+        getLog().info( "Using the current Maven JVM." );
         executeInCurrentJvm();
+    }
+
+    protected boolean shouldExecuteViaToolchainMaven( String javaExecutable )
+    {
+        return javaExecutable != null && !isDebuggerAttached();
+    }
+
+    /**
+     * A toolchain invocation runs Tomcat in a child Maven JVM.  IDE debuggers attach to the
+     * original Maven JVM, so re-invoking Maven would make breakpoints ineffective.
+     */
+    protected boolean isDebuggerAttached()
+    {
+        for ( String argument : ManagementFactory.getRuntimeMXBean().getInputArguments() )
+        {
+            if ( argument.startsWith( "-agentlib:jdwp" ) || argument.startsWith( "-Xrunjdwp" ) )
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void executeInCurrentJvm()
@@ -713,10 +740,12 @@ public abstract class AbstractRunMojo
         {
             Process process = processBuilder.start();
 
+            ExternalProcessContainer externalProcess =
+                new ExternalProcessContainer( process, "Toolchain Maven process for " + project.getArtifactId() );
+            EmbeddedRegistry.getInstance().register( externalProcess );
+
             if ( fork )
             {
-                EmbeddedRegistry.getInstance().register(
-                    new ExternalProcessContainer( process, "Toolchain Maven process for " + project.getArtifactId() ) );
                 try
                 {
                     Thread.sleep( 500L );

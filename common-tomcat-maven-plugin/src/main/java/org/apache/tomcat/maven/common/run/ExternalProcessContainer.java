@@ -18,6 +18,8 @@ package org.apache.tomcat.maven.common.run;
  * under the License.
  */
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,11 +45,49 @@ public class ExternalProcessContainer
             return;
         }
 
+        destroyProcessTreeOnWindows();
         process.destroy();
         if ( !process.waitFor( 5, TimeUnit.SECONDS ) )
         {
             process.destroyForcibly();
             process.waitFor( 5, TimeUnit.SECONDS );
+        }
+    }
+
+    private void destroyProcessTreeOnWindows()
+        throws InterruptedException
+    {
+        if ( !System.getProperty( "os.name" ).toLowerCase().contains( "win" ) )
+        {
+            return;
+        }
+
+        try
+        {
+            Long pid = getProcessId();
+            if ( pid == null )
+            {
+                return;
+            }
+            Process taskkill = new ProcessBuilder( "taskkill", "/PID", Long.toString( pid ), "/T", "/F" ).start();
+            taskkill.waitFor( 5, TimeUnit.SECONDS );
+        }
+        catch ( IOException e )
+        {
+            // process.destroy() below remains a best-effort fallback.
+        }
+    }
+
+    private Long getProcessId()
+    {
+        try
+        {
+            Method pidMethod = Process.class.getMethod( "pid" );
+            return (Long) pidMethod.invoke( process );
+        }
+        catch ( Exception e )
+        {
+            return null;
         }
     }
 
