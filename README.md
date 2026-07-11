@@ -33,6 +33,7 @@ Supported capabilities include:
 * embedded Tomcat execution for `run`-style goals
 * automatic Maven `jdk` toolchain support for `run`-style goals
 * zero-configuration fallback to the Maven runtime JDK when no toolchain is selected
+* virtual-thread executors for embedded Tomcat connectors on Java 21 or later
 * `exec-war`, `exec-war-only`, and standalone WAR runner packaging flows
 * Maven Central publishing via the `release-central` profile
 
@@ -42,6 +43,25 @@ For the `run`-style goals, the behavior is fixed:
 * if no `jdk` toolchain is available, the plugin keeps using the current Maven JVM
 
 To make the plugin run with a specific JDK, configure `maven-toolchains-plugin` so a `jdk` toolchain is selected before invoking `tomcat9:run`.
+
+Virtual threads
+---------------
+
+`run`-style goals enable Tomcat's virtual-thread executor for HTTP, HTTPS, and AJP connectors by default. Virtual threads require Java 21 or later and Tomcat libraries that include `VirtualThreadExecutor`. When either requirement is unavailable, the plugin logs a warning and uses Tomcat's default connector executor instead.
+
+When Maven itself runs on an older JDK, select a Java 21+ `jdk` toolchain to run Tomcat with virtual threads. To opt out, set `maven.tomcat.useVirtualThreads` to `false`:
+
+```xml
+<plugin>
+  <groupId>org.apache.tomcat.maven</groupId>
+  <artifactId>tomcat9-maven-plugin</artifactId>
+  <configuration>
+    <useVirtualThreads>false</useVirtualThreads>
+  </configuration>
+</plugin>
+```
+
+The same setting can be supplied from the command line with `-Dmaven.tomcat.useVirtualThreads=false`.
 
 Build and test
 --------------
